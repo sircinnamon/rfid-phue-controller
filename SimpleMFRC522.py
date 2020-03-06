@@ -8,7 +8,10 @@ class SimpleMFRC522:
   
   KEY = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
 #  KEY = [0xD3,0xF7,0xD3,0xF7,0xD3,0xF7]
-  BLOCK_ADDRS = [8, 9, 10]
+  BLOCK_ADDRS = [
+    8, 9, 10
+  ]
+  AUTH_ADDR = 11
   
   def __init__(self):
     self.READER = MFRC522.MFRC522()
@@ -38,7 +41,7 @@ class SimpleMFRC522:
         return None, None
     id = self.uid_to_num(uid)
     self.READER.MFRC522_SelectTag(uid)
-    status = self.READER.MFRC522_Auth(self.READER.PICC_AUTHENT1A, 11, self.KEY, uid)
+    status = self.READER.MFRC522_Auth(self.READER.PICC_AUTHENT1A, self.AUTH_ADDR, self.KEY, uid)
     data = []
     text_read = ''
     if status == self.READER.MI_OK:
@@ -69,8 +72,8 @@ class SimpleMFRC522:
           return None, None
       id = self.uid_to_num(uid)
       self.READER.MFRC522_SelectTag(uid)
-      status = self.READER.MFRC522_Auth(self.READER.PICC_AUTHENT1A, 11, self.KEY, uid)
-      self.READER.MFRC522_Read(11)
+      status = self.READER.MFRC522_Auth(self.READER.PICC_AUTHENT1A, self.AUTH_ADDR, self.KEY, uid)
+      self.READER.MFRC522_Read(self.AUTH_ADDR)
       if status == self.READER.MI_OK:
           data = bytearray()
           data.extend(bytearray(text.ljust(len(self.BLOCK_ADDRS) * 16).encode('ascii')))
